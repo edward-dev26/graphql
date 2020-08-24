@@ -1,4 +1,4 @@
-const {GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull} = require('graphql');
+const {GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLBoolean} = require('graphql');
 const Movies = require('../models/movies');
 const Directors = require('../models/directors');
 
@@ -8,6 +8,8 @@ const MovieType = new GraphQLObjectType({
         id: {type: GraphQLID},
         name: {type: new GraphQLNonNull(GraphQLString)},
         genre: {type: new GraphQLNonNull(GraphQLString)},
+        rate: {type: GraphQLInt},
+        watched: {type: new GraphQLNonNull(GraphQLBoolean)},
         director: {
             type: DirectorType,
             resolve(parent) {
@@ -74,10 +76,12 @@ const Mutation = new GraphQLObjectType({
             args: {
                 name: {type: new GraphQLNonNull(GraphQLString)},
                 genre: {type: new GraphQLNonNull(GraphQLString)},
-                directorId: {type: new GraphQLNonNull(GraphQLID)}
+                directorId: {type: new GraphQLNonNull(GraphQLID)},
+                rate: {type: GraphQLInt},
+                watched: {type: new GraphQLNonNull(GraphQLBoolean)},
             },
-            resolve(parent, {name, genre, directorId}) {
-                const movie = new Movies({name, genre, directorId});
+            resolve(parent, {name, genre, directorId, watched, rate}) {
+                const movie = new Movies({name, genre, directorId, watched, rate});
 
                 return movie.save();
             }
@@ -95,12 +99,14 @@ const Mutation = new GraphQLObjectType({
                 id: {type: GraphQLID},
                 name: {type: new GraphQLNonNull(GraphQLString)},
                 genre: {type: new GraphQLNonNull(GraphQLString)},
-                directorId: {type: new GraphQLNonNull(GraphQLID)}
+                directorId: {type: new GraphQLNonNull(GraphQLID)},
+                rate: {type: GraphQLInt},
+                watched: {type: new GraphQLNonNull(GraphQLBoolean)},
             },
-            resolve(parent, {id, name, genre, directorId}) {
+            resolve(parent, {id, name, genre, directorId, watched, rate}) {
                 return Movies.findByIdAndUpdate(
                     id,
-                    {name, genre, directorId},
+                    {name, genre, directorId, watched, rate},
                     {new: true}
                 )
             }
