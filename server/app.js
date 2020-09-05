@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3005;
+const PORT = process.env.PORT || 3005;
 
 mongoose.connect(`mongodb+srv://Edward:Drujok2607@cluster0.4xwkm.mongodb.net/graphql?retryWrites=true&w=majority`, {
     useNewUrlParser: true
